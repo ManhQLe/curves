@@ -1,0 +1,39 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#main-canvas {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #000000;
+}
+.layout-table {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.layout-table > .layout-row {
+  flex-direction: row;
+  display: flex;
+}
+.layout-table > .layout-row[shrink] {
+  flex-grow: 0;
+}
+.layout-table > .layout-row[expand] {
+  flex-grow: 1;
+}
+.docked-bar-container {
+  width: 15em;
+}
+.bar-container {
+  position: relative;
+  overflow: visible;
+}
+.canvas-container {
+  width: 100%;
+}
