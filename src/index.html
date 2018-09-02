@@ -7,8 +7,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="content/css/main.css" />
     <script src="content/d3/d3.min.js"></script>
+    <script src="content/js/curve.js"></script>
 </head>
 <body>
-    <svg id="main-canvas"></svg>
+    <svg id="main-canvas">
+    </svg>
+
+    <script>
+        let canvas = document.getElementById("main-canvas");
+        let p1 = [0,0]
+        let p2 = [500,100]
+        let t1 = [700,0]
+
+        let g = d3.select(canvas).append("g");
+        let ps = hermiteCurve(100,p1,p2,t1,t1);
+        let path = [];        
+        ps.forEach((e,i) => {            
+            path.push(i===0? "M":"L",Math.round(e[0])," ",Math.round(e[1]))
+        });
+        g.append("path")
+        .attr("d",path.join(""))
+        .attr("stroke","red");
+    </script>
 </body>
 </html>
