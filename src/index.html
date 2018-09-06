@@ -16,11 +16,12 @@
     <script>
         let canvas = document.getElementById("main-canvas");
         let p1 = [0,0]
-        let p2 = [500,100]
+        let p2 = [400,100]
         let t1 = [700,0]
+        let t2 = [600,30]
 
         let g = d3.select(canvas).append("g");
-        let ps = hermiteCurve(100,p1,p2,t1,t1);
+        let ps = hermiteCurve(100,p1,p2,t1,t2);
         let path = [];        
         ps.forEach((e,i) => {            
             path.push(i===0? "M":"L",Math.round(e[0])," ",Math.round(e[1]))
@@ -28,6 +29,17 @@
         g.append("path")
         .attr("d",path.join(""))
         .attr("stroke","red");
+
+        let BP =  Hermite2Bezier(p1,t1,p2,t2)
+
+        g.append("path").attr("d", [
+                "M", BP[0][0], ",", BP[0][1],
+                "C", BP[1][0], ",", BP[1][1],
+                " ", BP[2][0], ",", BP[2][1],
+                " ", BP[3][0], ",", BP[3][1],
+            ].join(""))
+        .attr("stroke","blue")
+
     </script>
 </body>
 </html>

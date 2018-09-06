@@ -21,3 +21,13 @@ function hermite(t) {
         Math.pow(t, 3) - Math.pow(t, 2)
     ]
 }
+
+
+function Hermite2Bezier(P0,T0, P1,T1){
+    return [
+        [P0[0], P0[1]],
+        [P0[0] + (1 / 3) * T0[0], P0[1] + (1 / 3) * T0[1]],
+        [P1[0] - (1 / 3) * T1[0], P1[1] - (1 / 3) * T1[1]],
+        [P1[0], P1[1]]
+];
+}
