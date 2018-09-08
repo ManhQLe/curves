@@ -23,11 +23,34 @@ function hermite(t) {
 }
 
 
-function Hermite2Bezier(P0,T0, P1,T1){
+function Hermite2Bezier(P0, T0, P1, T1) {
     return [
         [P0[0], P0[1]],
         [P0[0] + (1 / 3) * T0[0], P0[1] + (1 / 3) * T0[1]],
         [P1[0] - (1 / 3) * T1[0], P1[1] - (1 / 3) * T1[1]],
         [P1[0], P1[1]]
-];
+    ];
+}
+
+
+function ToBezier(points, c) {
+    let len = points.length;
+    let b = [];
+    for (let i = 0; i < len-1; i++) {
+        let p = points[i];
+        let i1 = i+1;
+        let i2 = i+2;
+        i1 = i1<len?i1:(len-1);
+        i2 = i2<len?i2:(len-1);
+
+        let pprev = points[i ? i - 1 : i];
+        let pnext = points[i1]
+        let t1 = [c * (pnext[0] - pprev[0]), c * (pnext[1] - pprev[1])]
+        let pnnext = points[i2]
+        let t2 = [c * (pnnext[0] - p[0]), c * (pnnext[1] - p[1])]
+
+        b.push(...Hermite2Bezier(p,t1,pnext,t2));
+
+    }
+    return b;
 }
