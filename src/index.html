@@ -15,29 +15,79 @@
 
     <script>
         let canvas = document.getElementById("main-canvas");
-        let p1 = [0,0]
+        let p1 = [10,20]
         let p2 = [100,200]        
-        let p3 = [300,300]
-        let p4 = [350,100]
+        let p3 = [340,270]
+        let p4 = [550,100]
+        let points = [p1,p2,p3,p4];
 
-        let b = ToBezier([p1,p2,p3,p4],.5)
+        let track = [0,0]
+
 
         let g = d3.select(canvas).append("g");
-        
-        console.log(b)
-        let d = [];
-        for(let i = 0;i<b.length;i+=4){
-            let b1 = b[i];
-            let b2 = b[i+1];
-            let b3 = b[i+2];
-            let b4 = b[i+3];
-            d.push(`M ${b1[0]} ${b1[1]}C${b2[0]} ${b2[1]}, ${b3[0]} ${b3[1]}, ${b4[0]} ${b4[1]}`)
+
+
+        let path = g.append("path")    
+        path.attr("stroke","#3498db")    
+
+        g.selectAll("circle")
+        .data(points)
+        .enter()
+        .append("circle")
+        .attr("cx",function(d){return d[0]})
+        .attr("cy",function(d){return d[1]})
+        .attr("r",5)
+        .attr('stroke-width',2)
+        .attr("stroke","white")
+        .attr("fill","#e74c3c")
+
+        function renderPath(ps){
+            let b = ToBezier(ps,.5)
+            let d = [];
+            for(let i = 0;i<b.length;i+=4){
+                let b1 = b[i];
+                let b2 = b[i+1];
+                let b3 = b[i+2];
+                let b4 = b[i+3];
+                d.push(`M ${b1[0]} ${b1[1]}C${b2[0]} ${b2[1]}, ${b3[0]} ${b3[1]}, ${b4[0]} ${b4[1]}`)
+            }
+
+            path.attr("d",d.join(""))
         }
+        
+        let circle = null;
 
 
-        g.append("path")
-        .attr("d",d.join(""))
-        .attr("stroke","red")
+        d3.select(canvas).on("mousedown",(e=d3.event)=>{
+            if(e.target.tagName==="circle")
+                circle = e.target;
+            track = [e.clientX,e.clientY]
+        })
+
+         d3.select(canvas).on("mouseup",(e=d3.event)=>{
+            circle = null;
+        })
+
+        d3.select(canvas).on("mousemove",(e=d3.event)=>{
+            if(e.buttons ===1)
+            {
+                let m = [e.clientX,e.clientY]
+                let dv = [m[0]-track[0],m[1]-track[1]]
+                if(circle){
+                    let d = d3.select(circle).datum()
+                    d[0]+=dv[0];
+                    d[1]+=dv[1];                    
+                    d3.select(circle)
+                    .attr("cx",d[0])
+                    .attr("cy",d[1])
+                    renderPath(points)
+                }
+                track = m;
+            }
+            
+        })
+        renderPath(points)
+
     </script>
 </body>
 </html>
