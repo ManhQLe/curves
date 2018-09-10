@@ -54,3 +54,27 @@ function ToBezier(points, c) {
     }
     return b;
 }
+
+function ToBezierOptimize(points, c) {
+    let len = points.length;
+    let b = [];
+    for (let i = 0; i < len-1; i++) {
+        let p = points[i];
+        let i1 = i+1;
+        let i2 = i+2;
+        i1 = i1<len?i1:(len-1);
+        i2 = i2<len?i2:(len-1);
+
+        let pprev = points[i ? i - 1 : i];
+        let pnext = points[i1]
+        let t1 = [c * (pnext[0] - pprev[0]), c * (pnext[1] - pprev[1])]
+        let pnnext = points[i2]
+        let t2 = [c * (pnnext[0] - p[0]), c * (pnnext[1] - p[1])]
+
+        let o = Hermite2Bezier(p,t1,pnext,t2)
+        b.push(o[0],o[1],o[2])        
+        if(i===len-2)
+            b.push(o[3])
+    }
+    return b;
+}

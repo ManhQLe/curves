@@ -19,7 +19,7 @@
         let p2 = [100,200]        
         let p3 = [340,270]
         let p4 = [550,100]
-        let points = [p1,p2,p3,p4];
+        let ctrlPoints = [p1,p2,p3,p4];
 
         let track = [0,0]
 
@@ -31,7 +31,7 @@
         path.attr("stroke","#3498db")    
 
         g.selectAll("circle")
-        .data(points)
+        .data(ctrlPoints)
         .enter()
         .append("circle")
         .attr("cx",function(d){return d[0]})
@@ -40,6 +40,22 @@
         .attr('stroke-width',2)
         .attr("stroke","white")
         .attr("fill","#e74c3c")
+
+        function renderPathOpt(ps){
+            let b = ToBezierOptimize(ps,.5)
+            console.log(b)
+            let d = [];
+            let b1 = b[0];
+            d.push(`M ${b1[0]} ${b1[1]}`)
+            for(let i = 1;i<b.length;i+=3){
+                let b1 = b[i];
+                let b2 = b[i+1];
+                let b3 = b[i+2];                
+                d.push(`C${b1[0]} ${b1[1]}, ${b2[0]} ${b2[1]}, ${b3[0]} ${b3[1]}`)
+            }
+
+            path.attr("d",d.join(""))
+        }
 
         function renderPath(ps){
             let b = ToBezier(ps,.5)
@@ -80,13 +96,13 @@
                     d3.select(circle)
                     .attr("cx",d[0])
                     .attr("cy",d[1])
-                    renderPath(points)
+                    renderPathOpt(ctrlPoints)
                 }
                 track = m;
             }
             
         })
-        renderPath(points)
+        renderPathOpt(ctrlPoints)
 
     </script>
 </body>
