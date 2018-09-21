@@ -24,10 +24,11 @@ function hermite(t) {
 
 
 function Hermite2Bezier(P0, T0, P1, T1) {
+    let onethird = 1/3;
     return [
         [P0[0], P0[1]],
-        [P0[0] + (1 / 3) * T0[0], P0[1] + (1 / 3) * T0[1]],
-        [P1[0] - (1 / 3) * T1[0], P1[1] - (1 / 3) * T1[1]],
+        [P0[0] + onethird * T0[0], P0[1] + onethird * T0[1]],
+        [P1[0] - onethird * T1[0], P1[1] - onethird * T1[1]],
         [P1[0], P1[1]]
     ];
 }

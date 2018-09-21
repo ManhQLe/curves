@@ -6,14 +6,24 @@
     <title>Curves</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="content/css/main.css" />
+    <script src="content/glmatrix/glmatrix.min.js"></script>
     <script src="content/d3/d3.min.js"></script>
-    <script src="content/js/curve.js"></script>
+    <script src="content/js/curve.js"></script>    
 </head>
 <body>
     <svg id="main-canvas">
     </svg>
 
     <script>
+        class ThreePointCurve{
+            constructor(p1,p2,p3){
+                this.P1 = p1;
+                this.P2 = p2;
+                this.P3 = p3;
+            }
+
+        }
+
         let canvas = document.getElementById("main-canvas");
         let p1 = [10,20]
         let p2 = [100,200]        
@@ -41,9 +51,7 @@
         .attr("stroke","white")
         .attr("fill","#e74c3c")
 
-        function renderPathOpt(ps){
-            let b = ToBezierOptimize(ps,.5)
-            console.log(b)
+        function createPathData(b){
             let d = [];
             let b1 = b[0];
             d.push(`M ${b1[0]} ${b1[1]}`)
@@ -53,8 +61,12 @@
                 let b3 = b[i+2];                
                 d.push(`C${b1[0]} ${b1[1]}, ${b2[0]} ${b2[1]}, ${b3[0]} ${b3[1]}`)
             }
+            return d.join("")
+        }
 
-            path.attr("d",d.join(""))
+        function renderPathOpt(ps){
+            let b = ToBezierOptimize(ps,.5)        
+            path.attr("d",createPathData(b));
         }
 
         function renderPath(ps){
@@ -72,16 +84,24 @@
         }
         
         let circle = null;
-
+        let pointCurve = null;
 
         d3.select(canvas).on("mousedown",(e=d3.event)=>{
             if(e.target.tagName==="circle")
                 circle = e.target;
+            else
+            {                
+                pointCurve = new ThreePointCurve([e.clientX,e.clientY],
+                    [e.clientX,e.clientY],
+                    [e.clientX,e.clientY]
+                );
+            }
             track = [e.clientX,e.clientY]
         })
 
          d3.select(canvas).on("mouseup",(e=d3.event)=>{
             circle = null;
+            pointCurve = null;
         })
 
         d3.select(canvas).on("mousemove",(e=d3.event)=>{
@@ -97,6 +117,12 @@
                     .attr("cx",d[0])
                     .attr("cy",d[1])
                     renderPathOpt(ctrlPoints)
+                }
+                else if(pointCurve){
+                    let path = pointCurve.path || g.append("path");
+
+                    path.attr("d")
+
                 }
                 track = m;
             }
