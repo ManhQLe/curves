@@ -37,23 +37,7 @@
                         set: function (v) {
                             this.P[1] = v;
                         }
-                    },
-                    "P3": {
-                        get: function () {
-                            return this.P[2];
-                        },
-                        set: function (v) {
-                            this.P[2] = v;
-                        }
-                    },
-                    "P4": {
-                        get: function () {
-                            return this.P[3];
-                        },
-                        set: function (v) {
-                            this.P[3] = v;
-                        }
-                    },
+                    }
                 })
             }
         }
@@ -153,20 +137,13 @@
                     let path = pointCurve.path || g.append("path")
                         .attr("stroke", "#9b59b6").attr("stroke-width", 2)
                         .attr("fill", "none")
-                    pointCurve.P4 = m;
-                    let P2 = [0, 0], P3 = [0, 0]
-                    let to = [0, 0]
-                    vec2.sub(to, pointCurve.P4, pointCurve.P1);
-                    vec2.scale(to,to,1/3);
-                    vec2.add(P2, pointCurve.P1,to);
-                    vec2.add(P3, P2, to);
-                    vec2.rotate(P2, P2, pointCurve.P1, Math.PI / 6);
-                    vec2.rotate(P3, P3, pointCurve.P4, Math.PI / 6);
-                    pointCurve.P2 = P2;
-                    pointCurve.P3 = P3;
-
-                    let b = ToBezierOptimize(pointCurve.P, .5);
-
+                    pointCurve.P2 = m;
+                    let T1 = [0, 0]
+                    vec2.sub(T1, pointCurve.P2, pointCurve.P1);
+                    let projLen = vec2.dot([1, 0], T1);
+                    vec2.scale(T1, [1,0], projLen);
+                    console.log(projLen);
+                    let b = Hermite2Bezier(pointCurve.P1,T1,pointCurve.P2,T1);
                     path.attr("d", createPathFromData(b))
                     pointCurve.path = path;
                 }
