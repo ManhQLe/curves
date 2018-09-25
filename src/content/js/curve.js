@@ -12,6 +12,14 @@ function hermiteCurve(n, P1, P2, T1, T2) {
     }
     return p;
 }
+//Tagent
+/* 
+    h1(t) =  6t^2 - 6t 
+    h2(t) = -6t^2 + 6t
+    h3(t) =  3t^2 - 4t + 1
+    h4(t) =  3t^2 - 2t
+*/
+
 
 function hermite(t) {
     return [

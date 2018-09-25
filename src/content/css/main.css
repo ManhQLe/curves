@@ -1,39 +1,69 @@
 html,
 body {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 #main-canvas {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background-color: #000000;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: #000000;
 }
+
 .layout-table {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
-.layout-table > .layout-row {
-  flex-direction: row;
-  display: flex;
+
+.layout-table>.layout-row {
+	flex-direction: row;
+	display: flex;
 }
-.layout-table > .layout-row[shrink] {
-  flex-grow: 0;
+
+.layout-table>.layout-row[shrink] {
+	flex-grow: 0;
 }
-.layout-table > .layout-row[expand] {
-  flex-grow: 1;
+
+.layout-table>.layout-row[expand] {
+	flex-grow: 1;
 }
+
 .docked-bar-container {
-  width: 15em;
+	width: 15em;
 }
+
 .bar-container {
-  position: relative;
-  overflow: visible;
+	position: relative;
+	overflow: visible;
 }
+
 .canvas-container {
-  width: 100%;
+	width: 100%;
+}
+
+.topbar {
+	background-color: white;
+	position: fixed;
+	top: 0;
+	left: 25%;
+	border: 1px solid #ecf0f1;
+	border-top: none;	
+}
+
+.topbar>ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.topbar>ul >li{
+	padding: .5em;
+	display: inline-flex;
+	align-items: center;
 }

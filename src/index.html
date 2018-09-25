@@ -10,38 +10,28 @@
     <script src="content/glmatrix/gl-matrix-min.js"></script>
     <script src="content/d3/d3.min.js"></script>
     <script src="content/js/curve.js"></script>
+    <script src="content/js/geo.js"></script>
 </head>
 
 <body>
+    <div class="topbar">
+        <ul>
+            <li>
+                <input name="operation" checked id="vec" type="radio"/><label for="vec">Vector</label>
+            </li>
+            <li>
+                <input name="operation" id="conduit" type="radio"/><label for="conduit">Conduit</label>
+            </li>
+            <li>
+                <input name="operation" id="select" type="radio"/><label for="select">Select</label>
+            </li>
+        </ul>
+    </div>
     <svg id="main-canvas">
     </svg>
 
     <script>
-        class ThreePointCurve {
-            constructor(p1, p2) {
-                this.P = [p1, null, null, p2]
-
-                Object.defineProperties(this, {
-                    "P1": {
-                        get: function () {
-                            return this.P[0];
-                        },
-                        set: function (v) {
-                            this.P[0] = v;
-                        }
-                    },
-                    "P2": {
-                        get: function () {
-                            return this.P[1];
-                        },
-                        set: function (v) {
-                            this.P[1] = v;
-                        }
-                    }
-                })
-            }
-        }
-
+       
         let canvas = document.getElementById("main-canvas");
         let p1 = [10, 20]
         let p2 = [100, 200]
@@ -69,7 +59,7 @@
             .attr("stroke", "white")
             .attr("fill", "#e74c3c")
 
-        function createPathFromData(b) {
+        function operationPathFromData(b) {
             let d = [];
             let b1 = b[0];
             d.push(`M ${b1[0]} ${b1[1]}`)
@@ -84,7 +74,7 @@
 
         function renderPathOpt(ps) {
             let b = ToBezierOptimize(ps, .5)
-            path.attr("d", createPathFromData(b));
+            path.attr("d", operationPathFromData(b));
         }
 
         function renderPath(ps) {
@@ -142,9 +132,8 @@
                     vec2.sub(T1, pointCurve.P2, pointCurve.P1);
                     let projLen = vec2.dot([1, 0], T1);
                     vec2.scale(T1, [1,0], projLen);
-                    console.log(projLen);
                     let b = Hermite2Bezier(pointCurve.P1,T1,pointCurve.P2,T1);
-                    path.attr("d", createPathFromData(b))
+                    path.attr("d", operationPathFromData(b))
                     pointCurve.path = path;
                 }
                 track = m;
