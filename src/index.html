@@ -116,32 +116,40 @@
         d3.select(canvas).on("mouseup", (e = d3.event) => {
             anchor = null
         })
-        
+
         d3.select(canvas).on("mousemove", (e = d3.event) => {
             if (e.buttons === 1) {
                 track.end = track.m2 = [e.clientX, e.clientY]
                 let dv = [0, 0]
                 vec2.sub(dv, track.m2, track.m1);
                 let op = getOp();
-                if (op === "select") {
-                    anchor || (anchor = ctrlPoints.find(p => {                       
-                        return vec2.dist(p, track.origin) <= 5;
-                    }))
-                    if(anchor)                    
-                    {
-                        anchor[0] = track.m2[0];
-                        anchor[1] = track.m2[1];
+                switch (op) {
+                    case "select":
+                        anchor || (anchor = ctrlPoints.find(p => {
+                            return vec2.dist(p, track.origin) <= 5;
+                        }))
+                        if (anchor) {
+                            anchor[0] = track.m2[0];
+                            anchor[1] = track.m2[1];
 
-                        g.selectAll("circle")
-                        .attr("cx", function (d) {
-                            return d[0]
-                        })
-                        .attr("cy", function (d) {
-                            return d[1]
-                        })
-                        renderPathOpt(ctrlPoints);
-                    }
+                            g.selectAll("circle")
+                                .attr("cx", function (d) {
+                                    return d[0]
+                                })
+                                .attr("cy", function (d) {
+                                    return d[1]
+                                })
+                            renderPathOpt(ctrlPoints);
+                        }
+                        break;
+                    case "vector":
+                        anchor || (anchor = new Vec(track.origin,track.m2), anchor.present(canvas));
+                        anchor.P2 = track.m2;
+                        anchor.refresh()
+
+                        break;
                 }
+
 
                 //Create Conduit
                 // let path = pointCurve.path || g.append("path")

@@ -45,21 +45,17 @@ class Vec{
         .attr("x2",d=>d.P2[0])
         .attr("y2",d=>d.P2[1])
 
-        g.selectAll("circle")
-        .data(vec.P)
-        .enter()
-        .append("circle").attr("fill","#3498db")
+        g.selectAll("circle")        
         .attr("cx",d=>d[0])
         .attr("cy",d=>d[1])
-        .attr("r","5")
     }
     present(canvas){
         this.vessel = Vec.render(canvas, this);
     }
 
     static render(canvas,vec){
-        let g = cavas.append("g");
-        let line = g.append("line")
+        let g = d3.select(canvas).append("g");
+        g.append("line")
         .datum(vec)
         .attr("stroke","#f39c12")
         .attr("stroke-width","2")
@@ -71,10 +67,12 @@ class Vec{
         g.selectAll("circle")
         .data(vec.P)
         .enter()
-        .append("circle").attr("fill","#3498db")
+        .append("circle").attr("fill",(d,i)=>i?"#e74c3c":"#2980b9")
+        .attr("stroke","white")
+        .attr("stroke-width",2)
         .attr("cx",d=>d[0])
         .attr("cy",d=>d[1])
-        .attr("r","5")
+        .attr("r",5)
         return g;        
     }
 }
