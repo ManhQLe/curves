@@ -17,13 +17,13 @@
     <div class="topbar">
         <ul>
             <li>
-                <input name="operation" checked id="vec" type="radio"/><label for="vec">Vector</label>
+                <input name="operation" checked id="vector" type="radio" /><label for="vector">Vector</label>
             </li>
             <li>
-                <input name="operation" id="conduit" type="radio"/><label for="conduit">Conduit</label>
+                <input name="operation" id="conduit" type="radio" /><label for="conduit">Conduit</label>
             </li>
             <li>
-                <input name="operation" id="select" type="radio"/><label for="select">Select</label>
+                <input name="operation" id="select" type="radio" /><label for="select">Select</label>
             </li>
         </ul>
     </div>
@@ -31,7 +31,6 @@
     </svg>
 
     <script>
-       
         let canvas = document.getElementById("main-canvas");
         let p1 = [10, 20]
         let p2 = [100, 200]
@@ -39,7 +38,6 @@
         let p4 = [550, 100]
         let ctrlPoints = [p1, p2, p3, p4];
 
-        let track = [0, 0]
 
 
         let g = d3.select(canvas).append("g");
@@ -52,12 +50,24 @@
             .data(ctrlPoints)
             .enter()
             .append("circle")
-            .attr("cx", function (d) { return d[0] })
-            .attr("cy", function (d) { return d[1] })
+            .attr("type", "ctrl")
+            .attr("cx", function (d) {
+                return d[0]
+            })
+            .attr("cy", function (d) {
+                return d[1]
+            })
             .attr("r", 5)
             .attr('stroke-width', 2)
             .attr("stroke", "white")
             .attr("fill", "#e74c3c")
+
+        function getOp() {
+            for (let x of document.getElementsByName("operation")) {
+                if (x.checked)
+                    return x.id;
+            }
+        }
 
         function operationPathFromData(b) {
             let d = [];
@@ -93,55 +103,73 @@
 
         let circle = null;
         let pointCurve = null;
+        let track = {
 
+        }
+        let m1;
+        let m2;
+        let anchor;
         d3.select(canvas).on("mousedown", (e = d3.event) => {
-            if (e.target.tagName === "circle")
-                circle = e.target;
-            else {
-                pointCurve = new ThreePointCurve([e.clientX, e.clientY],
-                    [e.clientX, e.clientY]
-                );
-            }
-            track = [e.clientX, e.clientY]
+            track.m1 = track.origin = [e.clientX, e.clientY]
         })
 
         d3.select(canvas).on("mouseup", (e = d3.event) => {
-            circle = null;
-            pointCurve = null;
+            anchor = null
         })
-
+        
         d3.select(canvas).on("mousemove", (e = d3.event) => {
             if (e.buttons === 1) {
-                let m = [e.clientX, e.clientY]
-                let dv = [m[0] - track[0], m[1] - track[1]]
-                if (circle) {
-                    let d = d3.select(circle).datum()
-                    d[0] += dv[0];
-                    d[1] += dv[1];
-                    d3.select(circle)
-                        .attr("cx", d[0])
-                        .attr("cy", d[1])
-                    renderPathOpt(ctrlPoints)
-                }
-                else if (pointCurve) {
-                    let path = pointCurve.path || g.append("path")
-                        .attr("stroke", "#9b59b6").attr("stroke-width", 2)
-                        .attr("fill", "none")
-                    pointCurve.P2 = m;
-                    let T1 = [0, 0]
-                    vec2.sub(T1, pointCurve.P2, pointCurve.P1);
-                    let projLen = vec2.dot([1, 0], T1);
-                    vec2.scale(T1, [1,0], projLen);
-                    let b = Hermite2Bezier(pointCurve.P1,T1,pointCurve.P2,T1);
-                    path.attr("d", operationPathFromData(b))
-                    pointCurve.path = path;
-                }
-                track = m;
-            }
+                track.end = track.m2 = [e.clientX, e.clientY]
+                let dv = [0, 0]
+                vec2.sub(dv, track.m2, track.m1);
+                let op = getOp();
+                if (op === "select") {
+                    anchor || (anchor = ctrlPoints.find(p => {                       
+                        return vec2.dist(p, track.origin) <= 5;
+                    }))
+                    if(anchor)                    
+                    {
+                        anchor[0] = track.m2[0];
+                        anchor[1] = track.m2[1];
 
+                        g.selectAll("circle")
+                        .attr("cx", function (d) {
+                            return d[0]
+                        })
+                        .attr("cy", function (d) {
+                            return d[1]
+                        })
+                        renderPathOpt(ctrlPoints);
+                    }
+                }
+
+
+                //MOVE
+                // let d = d3.select(circle).datum()
+                // d[0] += dv[0];
+                // d[1] += dv[1];
+                // d3.select(circle)
+                //     .attr("cx", d[0])
+                //     .attr("cy", d[1])
+                // renderPathOpt(ctrlPoints)
+
+                //Create Conduit
+                // let path = pointCurve.path || g.append("path")
+                //     .attr("stroke", "#9b59b6").attr("stroke-width", 2)
+                //     .attr("fill", "none")
+                // pointCurve.P2 = m;
+                // let T1 = [0, 0]
+                // vec2.sub(T1, pointCurve.P2, pointCurve.P1);
+                // let projLen = vec2.dot([1, 0], T1);
+                // vec2.scale(T1, [1,0], projLen);
+                // let b = Hermite2Bezier(pointCurve.P1,T1,pointCurve.P2,T1);
+                // path.attr("d", operationPathFromData(b))
+                // pointCurve.path = path;
+
+                track.m1 = track.m2;
+            }
         })
         renderPathOpt(ctrlPoints)
-
     </script>
 </body>
 
