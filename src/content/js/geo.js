@@ -45,7 +45,8 @@ class Vec{
         .attr("x2",d=>d.P2[0])
         .attr("y2",d=>d.P2[1])
 
-        g.selectAll("circle")        
+        g.selectAll("circle")  
+        .data(this.P)      
         .attr("cx",d=>d[0])
         .attr("cy",d=>d[1])
     }
