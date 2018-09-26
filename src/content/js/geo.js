@@ -1,6 +1,7 @@
-class ThreePointCurve {
-    constructor(p1, p2) {
-        this.P = [p1, null, null, p2]
+class Curve {
+    constructor(agr) {        
+        this._agr = {...agr}
+        this.P = [this._agr.P1,this._agr.P2,null,null];
 
         Object.defineProperties(this, {
             "P1": {
@@ -18,14 +19,36 @@ class ThreePointCurve {
                 set: function (v) {
                     this.P[1] = v;
                 }
-            }
+            },
+            "T1":{
+                get: function () {
+                    return this.P[2];
+                },
+                set: function (v) {
+                    this.P[2] = v;
+                }
+            },
+            "T2":{
+                get: function () {
+                    return this.P[3];
+                },
+                set: function (v) {
+                    this.P[3] = v;
+                }
+            }          
         })
+        
+        this.present(this._agr.reality);        
+    }
+    present(){
+
     }
 }
 
 class Vec{
-    constructor(p1,p2){        
-        this.P = [p1,p2];
+    constructor(agr){    
+        this._agr = {...agr};
+        this.P = [this._agr.P1,this._agr.P2];
         Object.defineProperties(this,{
             "P1":{
                 get:function(){return this.P[0]},
@@ -35,7 +58,8 @@ class Vec{
                 get:function(){return this.P[1]},
                 set:function(v){this.P[1] = v}
             }
-        })        
+        }) 
+        this.present(this._agr.reality);
     }
     refresh(){
         let g = this.vessel;

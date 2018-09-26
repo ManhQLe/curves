@@ -143,11 +143,13 @@
                         }
                         break;
                     case "vector":
-                        anchor || (anchor = new Vec(track.origin,track.m2), anchor.present(canvas));
+                        anchor || (anchor = new Vec({P1:track.origin,P2:track.m2,reality:canvas}));
                         anchor.P2 = track.m2;
                         anchor.refresh()
 
                         break;
+                    case "conduit":
+                        
                 }
 
 
