@@ -1,7 +1,7 @@
 class Curve {
     constructor(agr) {        
         this._agr = {...agr}
-        this.D = [null,null,null,null];
+        this.D = [agr.P1,agr.P2,agr.T1,agr.T2];
 
         Object.defineProperties(this, {
             "P1": {
@@ -9,8 +9,7 @@ class Curve {
                     return this.D[0];
                 },
                 set: function (v) {
-                    this.D[0] = v;
-                    this.refresh();
+                    this.D[0] = v;                    
                 }
             },
             "P2": {
@@ -18,8 +17,7 @@ class Curve {
                     return this.D[1];
                 },
                 set: function (v) {
-                    this.D[1] = v;
-                    this.refresh();
+                    this.D[1] = v;                    
                 }
             },
             "T1": {
@@ -27,8 +25,7 @@ class Curve {
                     return this.D[2];
                 },
                 set: function (v) {
-                    this.D[2] = v;
-                    this.refresh();
+                    this.D[2] = v;                    
                 }
             },
             "T2": {
@@ -36,8 +33,7 @@ class Curve {
                     return this.D[3];
                 },
                 set: function (v) {
-                    this.D[3] = v;
-                    this.refresh();
+                    this.D[3] = v;                    
                 }
             }
         })

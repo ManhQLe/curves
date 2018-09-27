@@ -70,7 +70,7 @@
             }
         }
 
-        
+
 
         function renderPathOpt(ps) {
             let b = ToBezierOptimize(ps, .5)
@@ -143,6 +143,34 @@
 
                         break;
                     case "conduit":
+                        let closeVec;
+                        if (!anchor) {
+                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.origin) <= 5);
+                            if (closeVec) {
+                                let t1 = [0, 0]
+                                vec2.sub(t1, closeVec.P2, closeVec.P1)
+                                anchor = new Curve({
+                                    P1: closeVec.P2,
+                                    T1: t1
+                                })
+                            }
+
+                        } else {
+                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.origin) <= 5);
+                            let p2,t2 = [0,0];
+                            if(closeVec){
+                                p2 = closeVec.P2;
+                                t2 = vec2.sub(t2,closeVec.P1,closeVec.P2);
+                            }
+                            else
+                            {
+                                p2 = track.m2;
+                                t2 = vec2.sub(t2,p2, anchor.P1);                                
+                            }
+                            anchor.P2 = p2;
+                            anchor.T2 = p2;
+                            anchor.refresh();
+                        }
                         break;
                 }
 
