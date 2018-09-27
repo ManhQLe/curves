@@ -19,7 +19,18 @@ function hermiteCurve(n, P1, P2, T1, T2) {
     h3(t) =  3t^2 - 4t + 1
     h4(t) =  3t^2 - 2t
 */
-
+function optimizePathFromData(b) {
+    let d = [];
+    let b1 = b[0];
+    d.push(`M ${b1[0]} ${b1[1]}`)
+    for (let i = 1; i < b.length; i += 3) {
+        let b1 = b[i];
+        let b2 = b[i + 1];
+        let b3 = b[i + 2];
+        d.push(`C${b1[0]} ${b1[1]}, ${b2[0]} ${b2[1]}, ${b3[0]} ${b3[1]}`)
+    }
+    return d.join("")
+}
 
 function hermite(t) {
     return [
