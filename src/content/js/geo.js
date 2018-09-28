@@ -5,7 +5,7 @@ class BCurve {
         this.D = [agr.P1, agr.P2, agr.T1, agr.T2];
 
         Object.defineProperties(this, {
-            "SP": {
+            "P1": {
                 get: function () {
                     return this.D[0];
                 },
@@ -13,7 +13,7 @@ class BCurve {
                     this.D[0] = v;
                 }
             },
-            "M1": {
+            "P2": {
                 get: function () {
                     return this.D[1];
                 },
@@ -21,7 +21,7 @@ class BCurve {
                     this.D[1] = v;
                 }
             },
-            "M2": {
+            "T1": {
                 get: function () {
                     return this.D[2];
                 },
@@ -29,7 +29,7 @@ class BCurve {
                     this.D[2] = v;
                 }
             },
-            "EP": {
+            "T2": {
                 get: function () {
                     return this.D[3];
                 },
@@ -51,12 +51,20 @@ class BCurve {
     }
 
     refresh() {
+        let {P1,P2,T1,T2} = this;
+        if(P1 && P2 && T1 && T2)
+        {
+            let M1 = [0,0],M2=[0,0]
 
-        let g = this.vessel;
-        g.select("path")
-        .attr("d", d => {
-            return optimizePathFromData(d.D);
-        })
+            vec2.add(M1,P1,T1)
+            vec2.add(M2,P2,T2)
+
+            let g = this.vessel;        
+            g.select("path")
+            .attr("d", d => {
+                return optimizePathFromData([P1,M1,M2,P2]);
+            })
+        }
     }
 }
 
