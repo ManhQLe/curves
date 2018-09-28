@@ -144,20 +144,22 @@
                         break;
                     case "conduit":
                         let closeVec;
-                        if (!anchor) {
+                        if (!anchor) {                            
                             closeVec = Vecs.find(x => vec2.dist(x.P2, track.origin) <= 5);
+         
                             if (closeVec) {
                                 let t1 = [0, 0]
                                 vec2.sub(t1, closeVec.P2, closeVec.P1)
                                 anchor = new Curve({
                                     P1: closeVec.P2,
-                                    T1: t1
+                                    T1: t1,
+                                    reality:canvas
                                 })
                             }
 
-                        } else {
-                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.origin) <= 5);
-                            let p2,t2 = [0,0];
+                        } else {                          
+                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.m2) <= 5);
+                            let p2,t2 = [0,0],t1=[0,0];
                             if(closeVec){
                                 p2 = closeVec.P2;
                                 t2 = vec2.sub(t2,closeVec.P1,closeVec.P2);
@@ -165,11 +167,23 @@
                             else
                             {
                                 p2 = track.m2;
-                                t2 = vec2.sub(t2,p2, anchor.P1);                                
-                            }
+                                t2 = vec2.sub(t2,track.m2, track.origin);
+                            }                            
+                            
                             anchor.P2 = p2;
-                            anchor.T2 = p2;
+
+                            let dist = vec2.dist(anchor.P2,anchor.P1)
+                            dist = Math.max(1,dist)*.5;
+                            vec2.normalize(t2,t2);
+                            vec2.scale(t2,t2,dist);
+                            anchor.T2 = t2;
+                            
+                            vec2.normalize(t1,anchor.T1);                                                        
+                            vec2.scale(t1,t1,dist);      
+                            
+                            anchor.T1 = t1;                            
                             anchor.refresh();
+                            
                         }
                         break;
                 }

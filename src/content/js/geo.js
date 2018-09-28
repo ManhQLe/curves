@@ -46,6 +46,7 @@ class Curve {
         .datum(this)
         .attr("stroke","#16a085")
         .attr("stroke-width",2)
+        .attr("fill","none")
     }
 
     refresh(){
@@ -67,7 +68,7 @@ class Curve {
 class Vec{
     constructor(agr){    
         this._agr = {...agr};
-        this.P = [this._agr.P1,this._agr.P2];
+        this.D = [this._agr.P1,this._agr.P2];
         Object.defineProperties(this,{
             "P1":{
                 get:function(){return this.D[0]},
@@ -89,7 +90,7 @@ class Vec{
         .attr("y2",d=>d.P2[1])
 
         g.selectAll("circle")  
-        .data(this.P)      
+        .data(this.D)      
         .attr("cx",d=>d[0])
         .attr("cy",d=>d[1])
     }
@@ -109,7 +110,7 @@ class Vec{
         .attr("y2",d=>d.P2[1])
 
         g.selectAll("circle")
-        .data(vec.P)
+        .data(vec.D)
         .enter()
         .append("circle").attr("fill",(d,i)=>i?"#e74c3c":"#2980b9")
         .attr("stroke","white")
