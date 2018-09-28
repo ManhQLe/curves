@@ -23,8 +23,11 @@
                 <input name="operation" id="conduit" type="radio" /><label for="conduit">Conduit</label>
             </li>
             <li>
-                <input name="operation" id="select" type="radio" /><label for="select">Select</label>
+                <input name="operation" id="bconduit" type="radio" /><label for="select">B-Conduit</label>
             </li>
+            <li>
+                <input name="operation" id="select" type="radio" /><label for="select">Select</label>
+            </li>            
         </ul>
     </div>
     <svg id="main-canvas">
@@ -185,6 +188,8 @@
                             anchor.refresh();
                             
                         }
+                        break;
+                    case "bconduit":
                         break;
                 }
 
