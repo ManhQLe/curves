@@ -54,7 +54,7 @@ class BCurve {
         let {P1,P2,T1,T2} = this;
         if(P1 && P2 && T1 && T2)
         {
-            let M1 = [0,0],M2=[0,0]
+            let M1 = [0,0], M2=[0,0]
 
             vec2.add(M1,P1,T1)
             vec2.add(M2,P2,T2)

@@ -116,6 +116,7 @@
                 let dv = [0, 0]
                 vec2.sub(dv, track.m2, track.m1);
                 let op = getOp();
+                let closeVec;
                 switch (op) {
                     case "select":
                         anchor || (anchor = ctrlPoints.find(p => {
@@ -146,7 +147,6 @@
 
                         break;
                     case "conduit":
-                        let closeVec;
                         if (!anchor) {                            
                             closeVec = Vecs.find(x => vec2.dist(x.P2, track.origin) <= 5);
          
@@ -190,22 +190,50 @@
                         }
                         break;
                     case "bconduit":
+                    
+                        if (!anchor) {                            
+                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.origin) <= 5);
+         
+                            if (closeVec) {
+                                let t1 = [0, 0]
+                                vec2.sub(t1, closeVec.P2, closeVec.P1)
+                                anchor = new BCurve({
+                                    P1: closeVec.P2,
+                                    T1: t1,
+                                    reality:canvas
+                                })
+                            }
+
+                        } else {                          
+                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.m2) <= 5);
+                            let p2,t2 = [0,0],t1=[0,0];
+                            if(closeVec){
+                                p2 = closeVec.P2;
+                                t2 = vec2.sub(t2,closeVec.P2,closeVec.P1);
+                            }
+                            else
+                            {
+                                p2 = track.m2;
+                                t2 = vec2.sub(t2, track.origin,track.m2);
+                            }                            
+                            
+                            anchor.P2 = p2;
+
+                            let dist = vec2.dist(anchor.P2,anchor.P1)
+                            dist = Math.max(1,dist)*.2;
+                            vec2.normalize(t2,t2);
+                            vec2.scale(t2,t2,dist);
+                            anchor.T2 = t2;
+                            
+                            vec2.normalize(t1,anchor.T1);                                                        
+                            vec2.scale(t1,t1,dist);      
+                            
+                            anchor.T1 = t1;                            
+                            anchor.refresh();
+                            
+                        }
                         break;
                 }
-
-
-                //Create Conduit
-                // let path = pointCurve.path || g.append("path")
-                //     .attr("stroke", "#9b59b6").attr("stroke-width", 2)
-                //     .attr("fill", "none")
-                // pointCurve.P2 = m;
-                // let T1 = [0, 0]
-                // vec2.sub(T1, pointCurve.P2, pointCurve.P1);
-                // let projLen = vec2.dot([1, 0], T1);
-                // vec2.scale(T1, [1,0], projLen);
-                // let b = Hermite2Bezier(pointCurve.P1,T1,pointCurve.P2,T1);
-                // path.attr("d", optimizePathFromData(b))
-                // pointCurve.path = path;
 
                 track.m1 = track.m2;
             }
