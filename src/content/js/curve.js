@@ -1,4 +1,74 @@
+var ep = e - 8;
 
+function fequal(a, b) {
+    return Math.abs(a - b) <= ep;
+}
+
+function solveQuad(a, b, c) {
+    let delta = b * b - 4 * a * c;
+    if (delta < 0)
+        return [];
+    else {
+        let a2 = 1 / (2 * a);
+        if (fequal(delta, 0.0))
+            return [-b / a2];
+        else {
+            delta = Math.sqrt(delta);
+            return [(-b + delta) * a2, (-b - delta) * a2]
+        }
+    }
+}
+
+function findAllTangents(P1, P2, P3, P4) {
+    let A = [0, 0]
+    vec2.addAndScale(A, A, P1, -3)
+    vec2.addAndScale(A, A, P2, 9)
+    vec2.addAndScale(A, A, P3, -9)
+    vec2.addAndScale(A, A, P4, 3)
+
+    let B = [0, 0]
+    vec2.addAndScale(B, B, P1, 6)
+    vec2.addAndScale(B, B, P2, -12)
+    vec2.addAndScale(B, B, P3, 6)
+
+    let C = [0, 0]
+    vec2.addAndScale(C, C, P1, -3)
+    vec2.addAndScale(C, C, P2, 3)
+
+    return solveQuad(A[0], B[0], C[0])
+        .concat(solveQuad(A[1], B[1], C[1]))
+}
+
+function findBoundingBox(P1, P2, P3, P4) {
+    let ts = findAllTangents(P1, P2, P3, P4)
+    let P = [P1,P2,P3,P4]
+    ts.forEach(t => {
+        P.push(bezier(P1,P2,P3,P4,t))
+    })
+
+    let minP = [Infinity,Infinity]
+    let maxP = [-Infinity,-Infinity]
+
+    P.forEach(p => {
+        minP[0] = Math.min(minP[0],p[0])
+        maxP[1] = Math.min(maxP[1],p[1])
+    });
+    return [minP,maxP]
+}
+
+function bezier(P1,P2,P3,P4,t){
+    let t2 = t*t;
+    let t3 = t2*t;
+    let onemt = (1-t);
+    let onemt2 = onemt* onemt;
+    let onemt3 = onemt2* onemt;
+    let P = [0,0]
+    vec3.addAndScale(P,P,P1,onemt3);
+    vec3.addAndScale(P,P,P2,3*t*onemt2);
+    vec3.addAndScale(P,P,P3,3*t2*onemt);
+    vec3.addAndScale(P,P,P4,t3);
+    return P;
+}
 
 function hermiteCurve(n, P1, P2, T1, T2) {
     let ds = 1 / (n - 1)
