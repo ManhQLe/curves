@@ -6,7 +6,7 @@ function fequal(a,b){
 function solveQuad(a,b,c){
     let delta = b*b - 4*a*c;
     if(delta < 0)
-        return null;
+        return [];
     else
     {
         let a2 = 1/(2*a);        
@@ -19,6 +19,25 @@ function solveQuad(a,b,c){
     }
 }
 
+function findAllTargent(P1,P2,P3,P4){
+    let A = [0,0]
+    vec2.addAndScale(A,A,P1,-3)
+    vec2.addAndScale(A,A,P2,9)
+    vec2.addAndScale(A,A,P3,-9)
+    vec2.addAndScale(A,A,P4,3)
+
+    let B = [0,0]
+    vec2.addAndScale(B,B,P1,6)
+    vec2.addAndScale(B,B,P2,-12)
+    vec2.addAndScale(B,B,P3,6)
+
+    let C = [0,0]
+    vec2.addAndScale(C,C,P1,-3)
+    vec2.addAndScale(C,C,P2,3)
+
+    return solveQuad(A[0],B[0],C[0])
+    .concat(solveQuad(A[1],B[1],C[1]))
+}
 
 
 class BCurve {
