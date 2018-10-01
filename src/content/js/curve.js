@@ -1,7 +1,15 @@
 var ep = e - 8;
 
-function fequal(a, b) {
+function equal(a, b) {
     return Math.abs(a - b) <= ep;
+}
+
+function gtequal(a, b) {
+    return a > b || equal(a, b)
+}
+
+function ltequal(a, b) {
+    return a < b || equal(a, b)
 }
 
 function solveQuad(a, b, c) {
@@ -10,7 +18,7 @@ function solveQuad(a, b, c) {
         return [];
     else {
         let a2 = 1 / (2 * a);
-        if (fequal(delta, 0.0))
+        if (equal(delta, 0.0))
             return [-b / a2];
         else {
             delta = Math.sqrt(delta);
@@ -41,32 +49,32 @@ function findAllTangents(P1, P2, P3, P4) {
 
 function findBoundingBox(P1, P2, P3, P4) {
     let ts = findAllTangents(P1, P2, P3, P4)
-    let P = [P1,P2,P3,P4]
+    let P = [P1, P2, P3, P4]
     ts.forEach(t => {
-        P.push(bezier(P1,P2,P3,P4,t))
+        P.push(bezier(P1, P2, P3, P4, t))
     })
 
-    let minP = [Infinity,Infinity]
-    let maxP = [-Infinity,-Infinity]
+    let minP = [Infinity, Infinity]
+    let maxP = [-Infinity, -Infinity]
 
     P.forEach(p => {
-        minP[0] = Math.min(minP[0],p[0])
-        maxP[1] = Math.min(maxP[1],p[1])
+        minP[0] = Math.min(minP[0], p[0])
+        maxP[1] = Math.min(maxP[1], p[1])
     });
-    return [minP,maxP]
+    return [minP, maxP]
 }
 
-function bezier(P1,P2,P3,P4,t){
-    let t2 = t*t;
-    let t3 = t2*t;
-    let onemt = (1-t);
-    let onemt2 = onemt* onemt;
-    let onemt3 = onemt2* onemt;
-    let P = [0,0]
-    vec3.addAndScale(P,P,P1,onemt3);
-    vec3.addAndScale(P,P,P2,3*t*onemt2);
-    vec3.addAndScale(P,P,P3,3*t2*onemt);
-    vec3.addAndScale(P,P,P4,t3);
+function bezier(P1, P2, P3, P4, t) {
+    let t2 = t * t;
+    let t3 = t2 * t;
+    let onemt = (1 - t);
+    let onemt2 = onemt * onemt;
+    let onemt3 = onemt2 * onemt;
+    let P = [0, 0]
+    vec3.addAndScale(P, P, P1, onemt3);
+    vec3.addAndScale(P, P, P2, 3 * t * onemt2);
+    vec3.addAndScale(P, P, P3, 3 * t2 * onemt);
+    vec3.addAndScale(P, P, P4, t3);
     return P;
 }
 
@@ -115,7 +123,7 @@ function hermite(t) {
 
 
 function Hermite2Bezier(P0, T0, P1, T1) {
-    let onethird = 1/3;
+    let onethird = 1 / 3;
     return [
         [P0[0], P0[1]],
         [P0[0] + onethird * T0[0], P0[1] + onethird * T0[1]],
@@ -128,12 +136,12 @@ function Hermite2Bezier(P0, T0, P1, T1) {
 function ToBezier(points, c) {
     let len = points.length;
     let b = [];
-    for (let i = 0; i < len-1; i++) {
+    for (let i = 0; i < len - 1; i++) {
         let p = points[i];
-        let i1 = i+1;
-        let i2 = i+2;
-        i1 = i1<len?i1:(len-1);
-        i2 = i2<len?i2:(len-1);
+        let i1 = i + 1;
+        let i2 = i + 2;
+        i1 = i1 < len ? i1 : (len - 1);
+        i2 = i2 < len ? i2 : (len - 1);
 
         let pprev = points[i ? i - 1 : i];
         let pnext = points[i1]
@@ -141,7 +149,7 @@ function ToBezier(points, c) {
         let pnnext = points[i2]
         let t2 = [c * (pnnext[0] - p[0]), c * (pnnext[1] - p[1])]
 
-        b.push(...Hermite2Bezier(p,t1,pnext,t2));
+        b.push(...Hermite2Bezier(p, t1, pnext, t2));
 
     }
     return b;
@@ -150,12 +158,12 @@ function ToBezier(points, c) {
 function ToBezierOptimize(points, c) {
     let len = points.length;
     let b = [];
-    for (let i = 0; i < len-1; i++) {
+    for (let i = 0; i < len - 1; i++) {
         let p = points[i];
-        let i1 = i+1;
-        let i2 = i+2;
-        i1 = i1<len?i1:(len-1);
-        i2 = i2<len?i2:(len-1);
+        let i1 = i + 1;
+        let i2 = i + 2;
+        i1 = i1 < len ? i1 : (len - 1);
+        i2 = i2 < len ? i2 : (len - 1);
 
         let pprev = points[i ? i - 1 : i];
         let pnext = points[i1]
@@ -163,9 +171,9 @@ function ToBezierOptimize(points, c) {
         let pnnext = points[i2]
         let t2 = [c * (pnnext[0] - p[0]), c * (pnnext[1] - p[1])]
 
-        let o = Hermite2Bezier(p,t1,pnext,t2)
-        b.push(o[0],o[1],o[2])        
-        if(i===len-2)
+        let o = Hermite2Bezier(p, t1, pnext, t2)
+        b.push(o[0], o[1], o[2])
+        if (i === len - 2)
             b.push(o[3])
     }
     return b;
