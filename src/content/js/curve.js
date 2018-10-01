@@ -1,3 +1,5 @@
+
+
 function hermiteCurve(n, P1, P2, T1, T2) {
     let ds = 1 / (n - 1)
     let t, s = 0;

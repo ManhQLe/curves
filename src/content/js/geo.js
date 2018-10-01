@@ -1,3 +1,26 @@
+var ep = e-8;
+function fequal(a,b){
+    return Math.abs(a-b)<= ep;
+}
+
+function solveQuad(a,b,c){
+    let delta = b*b - 4*a*c;
+    if(delta < 0)
+        return null;
+    else
+    {
+        let a2 = 1/(2*a);        
+        if(fequal(delta,0.0))
+            return [-b/a2];
+        else{
+            delta = Math.sqrt(delta);
+            return [(-b+delta)*a2,(-b-delta)*a2]
+        }
+    }
+}
+
+
+
 class BCurve {
     constructor(agr) {
         this._agr = { ...agr
