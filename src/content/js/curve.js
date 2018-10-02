@@ -53,11 +53,12 @@ function findAllTangents(P1, P2, P3, P4) {
     vec2.scaleAndAdd(C, C, P2, 3)
 
     return solveQuad(A[0], B[0], C[0])
-        .concat(solveQuad(A[1], B[1], C[1]))
+        .concat(solveQuad(A[1], B[1], C[1])).filter(x=>x>=0 && x<=1);
 }
 
 function findBoundingBox(P1, P2, P3, P4) {
     let ts = findAllTangents(P1, P2, P3, P4)
+    console.log(ts)
     let P = [P1, P2, P3, P4]
     ts.forEach(t => {
         P.push(bezier(P1, P2, P3, P4, t))
@@ -68,7 +69,11 @@ function findBoundingBox(P1, P2, P3, P4) {
 
     P.forEach(p => {
         minP[0] = Math.min(minP[0], p[0])
+        minP[1] = Math.min(minP[1], p[1])
+
+        maxP[0] = Math.max(maxP[0], p[0])
         maxP[1] = Math.max(maxP[1], p[1])
+
     });
     return [minP, maxP]
 }
