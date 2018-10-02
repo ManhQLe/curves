@@ -93,7 +93,6 @@
   
                             switch(v.constructor.name){
                                 case "BCurve":
-                                        console.log("B")
                                     break;
                                 case "Vec":
                                     break;
@@ -156,7 +155,7 @@
                     case "bconduit":
                     
                         if (!anchor) {                            
-                            closeVec = Vessels.find(x => vec2.dist(x.P2, track.origin) <= 5);
+                            closeVec = Vessels.find(x => x.constructor.name==="Vec" && vec2.dist(x.P2, track.origin) <= 5);
          
                             if (closeVec) {
                                 let t1 = [0, 0]
@@ -169,7 +168,7 @@
                             }
 
                         } else {                          
-                            closeVec = Vessels.find(x => vec2.dist(x.P2, track.m2) <= 5);
+                            closeVec = Vessels.find(x =>  x.constructor.name==="Vec" && vec2.dist(x.P2, track.m2) <= 5);
                             let p2,t2 = [0,0],t1=[0,0];
                             if(closeVec){
                                 p2 = closeVec.P2;
@@ -195,6 +194,13 @@
                             anchor.T1 = t1;                            
                             anchor.refresh();
                             
+                            let M1 = [0,0],M2 = [0,0]
+                            vec2.add(M1,anchor.P1,anchor.T1)
+                            vec2.add(M2,anchor.P2,anchor.T2)
+
+                            let b = findBoundingBox(anchor.P1,M1,M2,anchor.P2)
+                            console.log(b)
+
                         }
                         break;
                 }
