@@ -1,4 +1,4 @@
-var ep = e - 8;
+var ep = 1e-8;
 
 function equal(a, b) {
     return Math.abs(a - b) <= ep;

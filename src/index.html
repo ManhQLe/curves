@@ -35,36 +35,7 @@
 
     <script>
         let canvas = document.getElementById("main-canvas");
-        let Vecs = [];
-        let p1 = [10, 20]
-        let p2 = [100, 200]
-        let p3 = [340, 270]
-        let p4 = [550, 100]
-        let ctrlPoints = [p1, p2, p3, p4];
-
-
-
-        let g = d3.select(canvas).append("g");
-
-
-        let path = g.append("path")
-        path.attr("stroke", "#3498db")
-
-        g.selectAll("circle")
-            .data(ctrlPoints)
-            .enter()
-            .append("circle")
-            .attr("type", "ctrl")
-            .attr("cx", function (d) {
-                return d[0]
-            })
-            .attr("cy", function (d) {
-                return d[1]
-            })
-            .attr("r", 5)
-            .attr('stroke-width', 2)
-            .attr("stroke", "white")
-            .attr("fill", "#e74c3c")
+        let Vessels = [];
 
         function getOp() {
             for (let x of document.getElementsByName("operation")) {
@@ -72,7 +43,6 @@
                     return x.id;
             }
         }
-
 
 
         function renderPathOpt(ps) {
@@ -107,7 +77,7 @@
         })
 
         d3.select(canvas).on("mouseup", (e = d3.event) => {
-            anchor ? (Vecs.push(anchor), anchor = null) : 1;
+            anchor ? (Vessels.push(anchor), anchor = null) : 1;
         })
 
         d3.select(canvas).on("mousemove", (e = d3.event) => {
@@ -119,22 +89,7 @@
                 let closeVec;
                 switch (op) {
                     case "select":
-                        anchor || (anchor = ctrlPoints.find(p => {
-                            return vec2.dist(p, track.origin) <= 5;
-                        }))
-                        if (anchor) {
-                            anchor[0] = track.m2[0];
-                            anchor[1] = track.m2[1];
 
-                            g.selectAll("circle")
-                                .attr("cx", function (d) {
-                                    return d[0]
-                                })
-                                .attr("cy", function (d) {
-                                    return d[1]
-                                })
-                            renderPathOpt(ctrlPoints);
-                        }
                         break;
                     case "vector":
                         anchor || (anchor = new Vec({
@@ -148,7 +103,7 @@
                         break;
                     case "conduit":
                         if (!anchor) {                            
-                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.origin) <= 5);
+                            closeVec = Vessels.find(x => vec2.dist(x.P2, track.origin) <= 5);
          
                             if (closeVec) {
                                 let t1 = [0, 0]
@@ -161,7 +116,7 @@
                             }
 
                         } else {                          
-                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.m2) <= 5);
+                            closeVec = Vessels.find(x => vec2.dist(x.P2, track.m2) <= 5);
                             let p2,t2 = [0,0],t1=[0,0];
                             if(closeVec){
                                 p2 = closeVec.P2;
@@ -192,7 +147,7 @@
                     case "bconduit":
                     
                         if (!anchor) {                            
-                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.origin) <= 5);
+                            closeVec = Vessels.find(x => vec2.dist(x.P2, track.origin) <= 5);
          
                             if (closeVec) {
                                 let t1 = [0, 0]
@@ -205,7 +160,7 @@
                             }
 
                         } else {                          
-                            closeVec = Vecs.find(x => vec2.dist(x.P2, track.m2) <= 5);
+                            closeVec = Vessels.find(x => vec2.dist(x.P2, track.m2) <= 5);
                             let p2,t2 = [0,0],t1=[0,0];
                             if(closeVec){
                                 p2 = closeVec.P2;
@@ -238,7 +193,6 @@
                 track.m1 = track.m2;
             }
         })
-        renderPathOpt(ctrlPoints)
     </script>
 </body>
 
