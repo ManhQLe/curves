@@ -1,6 +1,4 @@
 
-
-
 class BCurve {
     constructor(agr) {
         this._agr = { ...agr

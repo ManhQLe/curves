@@ -89,7 +89,16 @@
                 let closeVec;
                 switch (op) {
                     case "select":
-
+                        Vessels.forEach(v=>{
+  
+                            switch(v.constructor.name){
+                                case "BCurve":
+                                        console.log("B")
+                                    break;
+                                case "Vec":
+                                    break;
+                            }
+                        })
                         break;
                     case "vector":
                         anchor || (anchor = new Vec({
