@@ -72,6 +72,7 @@
         let m1;
         let m2;
         let anchor;
+        let ghost;
         d3.select(canvas).on("mousedown", (e = d3.event) => {
             track.m1 = track.origin = [e.clientX, e.clientY]
         })
@@ -199,8 +200,8 @@
                             vec2.add(M2,anchor.P2,anchor.T2)
 
                             let b = findBoundingBox(anchor.P1,M1,M2,anchor.P2)
-                            console.log(b)
-
+                            ghost = d3.select(canvas).select('g')
+                            console.log(ghost)
                         }
                         break;
                 }
