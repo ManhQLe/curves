@@ -200,8 +200,23 @@
                             vec2.add(M2,anchor.P2,anchor.T2)
 
                             let b = findBoundingBox(anchor.P1,M1,M2,anchor.P2)
-                            ghost = d3.select(canvas).select('g')
-                            console.log(ghost)
+                            ghost || (
+                                ghost =  d3.select(canvas).append("g").append("path")
+                                .attr("stroke","#f1c40f")                                
+                                .attr("fill","none")
+                                .attr("stroke-dasharray","3 3")
+                            )
+                            let minp = b[0]
+                            let maxp = b[1]
+                            
+                            ghost.attr("d",[
+                                "M",minp[0]," ",minp[1],
+                                "L",maxp[0]," ",minp[1],                                
+                                "L",maxp[0]," ",maxp[1],
+                                "L",minp[0]," ",maxp[1],"Z"
+                            ].join(""))
+
+                                                                                    
                         }
                         break;
                 }
