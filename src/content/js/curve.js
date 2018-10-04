@@ -27,55 +27,59 @@ function solveQuad(a, b, c) {
     }
 }
 
-function overlapped(a1,b1,a2,b2){
-    return gtequal(b1,a2) && gtequal(b2,a1)
+function overlapped(a1, b1, a2, b2) {
+    return gtequal(b1, a2) && gtequal(b2, a1)
 }
 
-function bboxCollide(b1,b2){
-    return overlapped(b1.x,b1.x+b1.w,b2.x,b2.x+b2.w)
-        && overlapped(b1.y,b1.y+b1.h,b2.y,b2.y+b2.h)
+function bboxCollide(b1, b2) {
+    return overlapped(b1.x, b1.x + b1.w, b2.x, b2.x + b2.w) &&
+        overlapped(b1.y, b1.y + b1.h, b2.y, b2.y + b2.h)
 }
 
-function findAllTangents(P1, P2, P3, P4) {
-    let X = [0, 0],Y = [0, 0],Z = [0, 0]
-    vec2.sub(X,P2,P1)
-    vec2.sub(Y,P3,P2)
-    vec3.sub(Z,P4,P3)
+function findFlatPoint(P1, P2, P3, P4) {
+    let X = [0, 0],
+        Y = [0, 0],
+        Z = [0, 0]
+    vec2.sub(X, P2, P1)
+    vec2.sub(Y, P3, P2)
+    vec3.sub(Z, P4, P3)
 
-    let A = [0,0], B= [0,0], C=[0,0]
-    vec2.scaleAndAdd(A,A,X,3)
-    vec2.scaleAndAdd(A,A,Y,-6)
-    vec2.scaleAndAdd(A,A,Z,3)
+    let A = [0, 0],
+        B = [0, 0],
+        C = [0, 0]
+    vec2.scaleAndAdd(A, A, X, 3)
+    vec2.scaleAndAdd(A, A, Y, -6)
+    vec2.scaleAndAdd(A, A, Z, 3)
 
-    vec2.scaleAndAdd(B,B,X,-6)
-    vec2.scaleAndAdd(B,B,Y,6)    
+    vec2.scaleAndAdd(B, B, X, -6)
+    vec2.scaleAndAdd(B, B, Y, 6)
 
-    vec3.scale(C,Z,3)
+    vec3.scale(C, Z, 3)
 
     return solveQuad(A[0], B[0], C[0])
         .concat(solveQuad(A[1], B[1], C[1]))
-        .filter(x=>x>=0 && x<=1);
+        .filter(x => x >= 0 && x <= 1);
 }
 
 function findBoundingBox(P1, P2, P3, P4) {
-    let ts = findAllTangents(P1, P2, P3, P4)
+    let ts = findFlatPoint(P1, P2, P3, P4)
 
-    let P = [P1, P2, P3, P4]
+    let P = []
     ts.forEach(t => {
         P.push(bezier(P1, P2, P3, P4, t))
     })
 
-    let minP = [Infinity, Infinity]
-    let maxP = [-Infinity, -Infinity]
-
+    let minP = [Math.min(P1[0],P4[0]),Math.min(P1[1],P4[1])]
+    let maxP = [Math.max(P1[0],P4[0]),Math.max(P1[1],P4[1])]
+    console.log(P)
     P.forEach(p => {
         minP[0] = Math.min(minP[0], p[0])
         minP[1] = Math.min(minP[1], p[1])
 
         maxP[0] = Math.max(maxP[0], p[0])
         maxP[1] = Math.max(maxP[1], p[1])
-
     });
+    
     return [minP, maxP]
 }
 
