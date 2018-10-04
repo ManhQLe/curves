@@ -37,24 +37,22 @@ function bboxCollide(b1, b2) {
 }
 
 function findFlatPoint(P1, P2, P3, P4) {
-    let X = [0, 0],
-        Y = [0, 0],
-        Z = [0, 0]
-    vec2.sub(X, P2, P1)
-    vec2.sub(Y, P3, P2)
-    vec3.sub(Z, P4, P3)
-
     let A = [0, 0],
         B = [0, 0],
         C = [0, 0]
-    vec2.scaleAndAdd(A, A, X, 3)
-    vec2.scaleAndAdd(A, A, Y, -6)
-    vec2.scaleAndAdd(A, A, Z, 3)
+    vec2.scaleAndAdd(A, A, P1, -3)
+    vec2.scaleAndAdd(A, A, P2, 9)
+    vec2.scaleAndAdd(A, A, P3, -9)
+    vec2.scaleAndAdd(A, A, P4, 3)
 
-    vec2.scaleAndAdd(B, B, X, -6)
-    vec2.scaleAndAdd(B, B, Y, 6)
+    vec2.scaleAndAdd(B, B, P1, 6)
+    vec2.scaleAndAdd(B, B, P2, -12)
+    vec2.scaleAndAdd(B, B, P3, 6)
 
-    vec3.scale(C, Z, 3)
+    vec2.scaleAndAdd(C, C, P2, 3)
+    vec2.scaleAndAdd(C, C, P1, -3)
+    
+
 
     return solveQuad(A[0], B[0], C[0])
         .concat(solveQuad(A[1], B[1], C[1]))
