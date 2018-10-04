@@ -73,17 +73,7 @@
         let m2;
         let anchor;
         let ghost;
-        let cir = d3.select(canvas).append("circle")
-            .attr("fill", "red")
-        let cir2 = d3.select(canvas).append("circle")
-            .attr("fill", "red")
-        let cir3 = d3.select(canvas).append("circle")
-            .attr("fill", "red")
-
-        let dpath = d3.select(canvas).append("path")
-            .attr("fill", "none")
-            .attr("stroke", "blue")
-
+       
         d3.select(canvas).on("mousedown", (e = d3.event) => {
             track.m1 = track.origin = [e.clientX, e.clientY]
         })
@@ -228,32 +218,6 @@
                                 "L", minp[0], " ", maxp[1], "Z"
                             ].join(""))
 
-
-                            cir2.attr("cx", M1[0])
-                                .attr("cy", M1[1])
-                                .attr("r", 5)
-
-                            cir3.attr("cx", M2[0])
-                                .attr("cy", M2[1])
-                                .attr("r", 5)
-                            let t = findFlatPoint(anchor.P1, M1, M2, anchor.P2)
-                            if (t.length > 0) {
-                                let x = bezier(anchor.P1, M1, M2, anchor.P2, t[0])
-                                cir.attr("cx", x[0])
-                                    .attr("cy", x[1])
-                                    .attr("r", 5)
-                            }
-
-                            let dt = 1 / 100;
-                            t = 0;
-                            let pp = []
-                            for (var i = 0; i < 100; i++) {
-                                let bp = bezier(anchor.P1, M1, M2, anchor.P2, t);
-                                pp.push(i == 0 ? "M" : "L", bp[0], " ", bp[1]);
-                                t+=dt;
-                            }
-                            
-                            dpath.attr("d", pp.join(""))
                         }
                         break;
                 }
