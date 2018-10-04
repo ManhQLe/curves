@@ -71,7 +71,7 @@ function findBoundingBox(P1, P2, P3, P4) {
 
     let minP = [Math.min(P1[0],P4[0]),Math.min(P1[1],P4[1])]
     let maxP = [Math.max(P1[0],P4[0]),Math.max(P1[1],P4[1])]
-    console.log(P)
+
     P.forEach(p => {
         minP[0] = Math.min(minP[0], p[0])
         minP[1] = Math.min(minP[1], p[1])

@@ -27,7 +27,7 @@
             </li>
             <li>
                 <input name="operation" id="select" type="radio" /><label for="select">Select</label>
-            </li>            
+            </li>
         </ul>
     </div>
     <svg id="main-canvas">
@@ -74,11 +74,15 @@
         let anchor;
         let ghost;
         let cir = d3.select(canvas).append("circle")
-        .attr("fill","red")
+            .attr("fill", "red")
         let cir2 = d3.select(canvas).append("circle")
-        .attr("fill","red")
+            .attr("fill", "red")
         let cir3 = d3.select(canvas).append("circle")
-        .attr("fill","red")
+            .attr("fill", "red")
+
+        let dpath = d3.select(canvas).append("path")
+            .attr("fill", "none")
+            .attr("stroke", "blue")
 
         d3.select(canvas).on("mousedown", (e = d3.event) => {
             track.m1 = track.origin = [e.clientX, e.clientY]
@@ -97,9 +101,9 @@
                 let closeVec;
                 switch (op) {
                     case "select":
-                        Vessels.forEach(v=>{
-  
-                            switch(v.constructor.name){
+                        Vessels.forEach(v => {
+
+                            switch (v.constructor.name) {
                                 case "BCurve":
                                     break;
                                 case "Vec":
@@ -118,126 +122,138 @@
 
                         break;
                     case "conduit":
-                        if (!anchor) {                            
+                        if (!anchor) {
                             closeVec = Vessels.find(x => vec2.dist(x.P2, track.origin) <= 5);
-         
+
                             if (closeVec) {
                                 let t1 = [0, 0]
                                 vec2.sub(t1, closeVec.P2, closeVec.P1)
                                 anchor = new Curve({
                                     P1: closeVec.P2,
                                     T1: t1,
-                                    reality:canvas
+                                    reality: canvas
                                 })
                             }
 
-                        } else {                          
+                        } else {
                             closeVec = Vessels.find(x => vec2.dist(x.P2, track.m2) <= 5);
-                            let p2,t2 = [0,0],t1=[0,0];
-                            if(closeVec){
+                            let p2, t2 = [0, 0],
+                                t1 = [0, 0];
+                            if (closeVec) {
                                 p2 = closeVec.P2;
-                                t2 = vec2.sub(t2,closeVec.P1,closeVec.P2);
-                            }
-                            else
-                            {
+                                t2 = vec2.sub(t2, closeVec.P1, closeVec.P2);
+                            } else {
                                 p2 = track.m2;
-                                t2 = vec2.sub(t2,track.m2, track.origin);
-                            }                            
-                            
+                                t2 = vec2.sub(t2, track.m2, track.origin);
+                            }
+
                             anchor.P2 = p2;
 
-                            let dist = vec2.dist(anchor.P2,anchor.P1)
-                            dist = Math.max(1,dist)*.5;
-                            vec2.normalize(t2,t2);
-                            vec2.scale(t2,t2,dist);
+                            let dist = vec2.dist(anchor.P2, anchor.P1)
+                            dist = Math.max(1, dist) * .5;
+                            vec2.normalize(t2, t2);
+                            vec2.scale(t2, t2, dist);
                             anchor.T2 = t2;
-                            
-                            vec2.normalize(t1,anchor.T1);                                                        
-                            vec2.scale(t1,t1,dist);      
-                            
-                            anchor.T1 = t1;                            
+
+                            vec2.normalize(t1, anchor.T1);
+                            vec2.scale(t1, t1, dist);
+
+                            anchor.T1 = t1;
                             anchor.refresh();
-                            
+
                         }
                         break;
                     case "bconduit":
-                    
-                        if (!anchor) {                            
-                            closeVec = Vessels.find(x => x.constructor.name==="Vec" && vec2.dist(x.P2, track.origin) <= 5);
-         
+
+                        if (!anchor) {
+                            closeVec = Vessels.find(x => x.constructor.name === "Vec" && vec2.dist(x.P2, track.origin) <=
+                                5);
+
                             if (closeVec) {
                                 let t1 = [0, 0]
                                 vec2.sub(t1, closeVec.P2, closeVec.P1)
                                 anchor = new BCurve({
                                     P1: closeVec.P2,
                                     T1: t1,
-                                    reality:canvas
+                                    reality: canvas
                                 })
                             }
 
-                        } else {                          
-                            closeVec = Vessels.find(x =>  x.constructor.name==="Vec" && vec2.dist(x.P2, track.m2) <= 5);
-                            let p2,t2 = [0,0],t1=[0,0];
-                            if(closeVec){
+                        } else {
+                            closeVec = Vessels.find(x => x.constructor.name === "Vec" && vec2.dist(x.P2, track.m2) <=
+                                5);
+                            let p2, t2 = [0, 0],
+                                t1 = [0, 0];
+                            if (closeVec) {
                                 p2 = closeVec.P2;
-                                t2 = vec2.sub(t2,closeVec.P2,closeVec.P1);
-                            }
-                            else
-                            {
+                                t2 = vec2.sub(t2, closeVec.P2, closeVec.P1);
+                            } else {
                                 p2 = track.m2;
-                                t2 = vec2.sub(t2, track.origin,track.m2);
-                            }                            
-                            
+                                t2 = vec2.sub(t2, track.origin, track.m2);
+                            }
+
                             anchor.P2 = p2;
 
-                            let dist = vec2.dist(anchor.P2,anchor.P1)
-                            dist = Math.max(1,dist)*.2;
-                            vec2.normalize(t2,t2);
-                            vec2.scale(t2,t2,dist);
+                            let dist = vec2.dist(anchor.P2, anchor.P1)
+                            dist = Math.max(1, dist) * .2;
+                            vec2.normalize(t2, t2);
+                            vec2.scale(t2, t2, dist);
                             anchor.T2 = t2;
-                            
-                            vec2.normalize(t1,anchor.T1);                                                        
-                            vec2.scale(t1,t1,dist);      
-                            
-                            anchor.T1 = t1;                            
-                            anchor.refresh();
-                            
-                            let M1 = [0,0],M2 = [0,0]
-                            vec2.add(M1,anchor.P1,anchor.T1)
-                            vec2.add(M2,anchor.P2,anchor.T2)
 
-                            let b = findBoundingBox(anchor.P1,M1,M2,anchor.P2)
+                            vec2.normalize(t1, anchor.T1);
+                            vec2.scale(t1, t1, dist);
+
+                            anchor.T1 = t1;
+                            anchor.refresh();
+
+                            let M1 = [0, 0],
+                                M2 = [0, 0]
+                            vec2.add(M1, anchor.P1, anchor.T1)
+                            vec2.add(M2, anchor.P2, anchor.T2)
+
+                            let b = findBoundingBox(anchor.P1, M1, M2, anchor.P2)
                             ghost || (
-                                ghost =  d3.select(canvas).append("g").append("path")
-                                .attr("stroke","#f1c40f")                                
-                                .attr("fill","none")
-                                .attr("stroke-dasharray","3 3")
+                                ghost = d3.select(canvas).append("g").append("path")
+                                .attr("stroke", "#f1c40f")
+                                .attr("fill", "none")
+                                .attr("stroke-dasharray", "3 3")
                             )
                             let minp = b[0]
                             let maxp = b[1]
-                            
-                            ghost.attr("d",[
-                                "M",minp[0]," ",minp[1],
-                                "L",maxp[0]," ",minp[1],                                
-                                "L",maxp[0]," ",maxp[1],
-                                "L",minp[0]," ",maxp[1],"Z"
-                            ].join(""))
-                            
 
-                            cir2.attr("cx",M1[0])
-                                .attr("cy",M1[1])
-                                .attr("r",5)
-                            
-                            cir3.attr("cx",M2[0])
-                                .attr("cy",M2[1])
-                                .attr("r",5)
-                            let t = findFlatPoint(anchor.P1,M1,M2,anchor.P2)
-                            if(t.length>0){
-                                let x = bezier(anchor.P1,M1,M2,anchor.P2,t[0])
-                                cir.attr("cx",x[0])
-                                .attr("cy",x[1])
-                                .attr("r",5)
+                            ghost.attr("d", [
+                                "M", minp[0], " ", minp[1],
+                                "L", maxp[0], " ", minp[1],
+                                "L", maxp[0], " ", maxp[1],
+                                "L", minp[0], " ", maxp[1], "Z"
+                            ].join(""))
+
+
+                            cir2.attr("cx", M1[0])
+                                .attr("cy", M1[1])
+                                .attr("r", 5)
+
+                            cir3.attr("cx", M2[0])
+                                .attr("cy", M2[1])
+                                .attr("r", 5)
+                            let t = findFlatPoint(anchor.P1, M1, M2, anchor.P2)
+                            if (t.length > 0) {
+                                let x = bezier(anchor.P1, M1, M2, anchor.P2, t[0])
+                                cir.attr("cx", x[0])
+                                    .attr("cy", x[1])
+                                    .attr("r", 5)
                             }
+
+                            let dt = 1 / 100;
+                            t = 0;
+                            let pp = []
+                            for (var i = 0; i < 100; i++) {
+                                let bp = bezier(anchor.P1, M1, M2, anchor.P2, t);
+                                pp.push(i == 0 ? "M" : "L", bp[0], " ", bp[1]);
+                                t+=dt;
+                            }
+                            
+                            dpath.attr("d", pp.join(""))
                         }
                         break;
                 }
