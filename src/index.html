@@ -97,7 +97,8 @@
                         for(let v of Vessels){
                             if(v.constructor.name === "BCurve"){
                                 let box =  v.getBBox()                               
-                                if(bboxCollide(box,[track.m2,track.m2])){
+                                let box2 = findExtreme([track.origin,track.m2])
+                                if(bboxCollide(box,box2)){
                                     fbox = box;
                                     break;
                                 }

@@ -103,7 +103,7 @@ function findClosesetT(P,P1,P2,P3,P4){
     let t1=0,t2=1;
     let gold = (Math.sqrt(5)-1)*.5;
     while(true){        
-        let len = Math.abs(t1-t2);
+        let len = t2-t1;
         if(len<=1e-5)
             break;
 

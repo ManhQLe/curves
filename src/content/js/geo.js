@@ -33,6 +33,18 @@ class BCurve extends PhysicalTemplate {
                     this.D[1] = v;
                 }
             },
+            "M1":{
+                get: function () {
+                    let {P1,T1} = this;
+                    return [P1[0]+T1[0],P1[1]+T1[1]]
+                }
+            },
+            "M2":{
+                get: function () {
+                    let {P2,T2} = this;
+                    return [P2[0]+T2[0],P2[1]+T2[1]]
+                }
+            },
             "T1": {
                 get: function () {
                     return this.D[2];
@@ -64,10 +76,7 @@ class BCurve extends PhysicalTemplate {
 
     getBBox(){
         if(!this.box){
-            let M1 = [0,0],M2=[0,0]
-            vec2.add(M1,this.P1,this.T1)
-            vec2.add(M2,this.P2,this.T2)
-            this.box = findBoundingBox(this.P1,M1,M2,this.P2)
+            this.box = findBoundingBox(this.P1,this.M1,this.M2,this.P2)
         }
         return this.box;
     }
