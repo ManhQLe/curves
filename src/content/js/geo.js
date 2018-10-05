@@ -1,6 +1,17 @@
+class PhysicalTemplate{
+    constructor(){
+        
+    }
 
-class BCurve {
+    getBBox(){
+        return [[0,0],[0,0]];
+    }
+}
+
+
+class BCurve extends PhysicalTemplate {
     constructor(agr) {
+        super(agr);
         this._agr = { ...agr
         }
         this.D = [agr.P1, agr.P2, agr.T1, agr.T2];
@@ -74,8 +85,9 @@ class BCurve {
     }
 }
 
-class Curve {
+class Curve extends PhysicalTemplate {
     constructor(agr) {
+        super(agr)
         this._agr = { ...agr
         }
         this.D = [agr.P1, agr.P2, agr.T1, agr.T2];
@@ -147,8 +159,9 @@ class Curve {
     }
 }
 
-class Vec {
+class Vec extends PhysicalTemplate {
     constructor(agr) {
+        super(agr);
         this._agr = { ...agr
         };
         this.D = [this._agr.P1, this._agr.P2];
@@ -187,6 +200,14 @@ class Vec {
     }
     present(canvas) {
         this.vessel = Vec.render(canvas, this);
+    }
+
+    getBBox(){
+        if(!this.box){
+            this.box = []
+        }
+
+        return this.box
     }
 
     static render(canvas, vec) {

@@ -27,6 +27,20 @@ function solveQuad(a, b, c) {
     }
 }
 
+function findExtreme(Ps){
+    let minP = [Infinity,Infinity]
+    let maxP = [-Infinity,-Infinity]
+    Ps.forEach(p => {
+        minP[0] = Math.min(minP[0], p[0])
+        minP[1] = Math.min(minP[1], p[1])
+
+        maxP[0] = Math.max(maxP[0], p[0])
+        maxP[1] = Math.max(maxP[1], p[1])
+    });
+    
+    return [minP, maxP]
+}
+
 function overlapped(a1, b1, a2, b2) {
     return gtequal(b1, a2) && gtequal(b2, a1)
 }
@@ -67,18 +81,8 @@ function findBoundingBox(P1, P2, P3, P4) {
         P.push(bezier(P1, P2, P3, P4, t))
     })
 
-    let minP = [Math.min(P1[0],P4[0]),Math.min(P1[1],P4[1])]
-    let maxP = [Math.max(P1[0],P4[0]),Math.max(P1[1],P4[1])]
-
-    P.forEach(p => {
-        minP[0] = Math.min(minP[0], p[0])
-        minP[1] = Math.min(minP[1], p[1])
-
-        maxP[0] = Math.max(maxP[0], p[0])
-        maxP[1] = Math.max(maxP[1], p[1])
-    });
-    
-    return [minP, maxP]
+    P.push(P1,P4)
+    return findExtreme(P);
 }
 
 function bezier(P1, P2, P3, P4, t) {
