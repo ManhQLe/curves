@@ -46,8 +46,8 @@ function overlapped(a1, b1, a2, b2) {
 }
 
 function bboxCollide(b1, b2) {
-    return overlapped(b1.x, b1.x + b1.w, b2.x, b2.x + b2.w) &&
-        overlapped(b1.y, b1.y + b1.h, b2.y, b2.y + b2.h)
+    return overlapped(b1[0][0], b1[1][0],b2[0][0], b2[1][0]) &&
+        overlapped(b1[0][1], b1[1][1],b2[0][1], b2[1][1])
 }
 
 function findFlatPoint(P1, P2, P3, P4) {
@@ -97,6 +97,27 @@ function bezier(P1, P2, P3, P4, t) {
     vec3.scaleAndAdd(P, P, P3, 3 * t2 * onemt);
     vec3.scaleAndAdd(P, P, P4, t3);
     return P;
+}
+
+function findClosesetT(P,P1,P2,P3,P4){
+    let t1=0,t2=1;
+    let gold = (Math.sqrt(5)-1)*.5;
+    while(true){        
+        let len = Math.abs(t1-t2);
+        if(len<=1e-5)
+            break;
+
+        let pt1 = bezier(P1,P2,P3,P4,t1)
+        let pt2 = bezier(P1,P2,P3,P4,t2)
+        let d1 = vec2.dist(pt1,P)
+        let d2 = vec2.dist(pt2,P)
+        if(d1<d2){
+            t2-=len*gold;
+        }
+        else
+            t1+=len*gold;
+    }
+    return t1;
 }
 
 function hermiteCurve(n, P1, P2, T1, T2) {

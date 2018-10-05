@@ -80,6 +80,8 @@
 
         d3.select(canvas).on("mouseup", (e = d3.event) => {
             anchor ? (Vessels.push(anchor), anchor = null) : 1;
+            ghost && canvas.removeChild(ghost.node())
+            ghost = null;            
         })
 
         d3.select(canvas).on("mousemove", (e = d3.event) => {
@@ -91,15 +93,29 @@
                 let closeVec;
                 switch (op) {
                     case "select":
-                        Vessels.forEach(v => {
-
-                            switch (v.constructor.name) {
-                                case "BCurve":
+                        let fbox;
+                        for(let v of Vessels){
+                            if(v.constructor.name === "BCurve"){
+                                let box =  v.getBBox()                               
+                                if(bboxCollide(box,[track.m2,track.m2])){
+                                    fbox = box;
                                     break;
-                                case "Vec":
-                                    break;
+                                }
                             }
-                        })
+                        }
+                        ghost || (ghost = d3.select(canvas).append("path")
+                        .attr("stroke","#e74c3c")
+                        .attr("fill","none"))
+                        .attr("stroke-dasharray","5 5")
+                        
+                        ghost.attr("visibility",fbox?"visible":"hidden")
+                        if(fbox){
+                            let [min,max] = fbox;
+                            let d = ["M",min[0]," ",min[1],"L",max[0]," ",min[1],
+                                     "L",max[0]," ",max[1],"L",min[0]," ",max[1],"Z"]
+                            ghost.attr("d",d.join(""))
+                        }
+
                         break;
                     case "vector":
                         anchor || (anchor = new Vec({
@@ -195,29 +211,6 @@
 
                             anchor.T1 = t1;
                             anchor.refresh();
-
-                            let M1 = [0, 0],
-                                M2 = [0, 0]
-                            vec2.add(M1, anchor.P1, anchor.T1)
-                            vec2.add(M2, anchor.P2, anchor.T2)
-
-                            let b = findBoundingBox(anchor.P1, M1, M2, anchor.P2)
-                            ghost || (
-                                ghost = d3.select(canvas).append("g").append("path")
-                                .attr("stroke", "#f1c40f")
-                                .attr("fill", "none")
-                                .attr("stroke-dasharray", "3 3")
-                            )
-                            let minp = b[0]
-                            let maxp = b[1]
-
-                            ghost.attr("d", [
-                                "M", minp[0], " ", minp[1],
-                                "L", maxp[0], " ", minp[1],
-                                "L", maxp[0], " ", maxp[1],
-                                "L", minp[0], " ", maxp[1], "Z"
-                            ].join(""))
-
                         }
                         break;
                 }
