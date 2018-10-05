@@ -62,6 +62,16 @@ class BCurve extends PhysicalTemplate {
             .attr("fill", "none")
     }
 
+    getBBox(){
+        if(!this.box){
+            let M1 = [0,0],M2=[0,0]
+            vec2.add(M1,this.P1,this.T1)
+            vec2.add(M2,this.P2,this.T2)
+            this.box = findBoundingBox(this.P1,M1,M2,this.P2)
+        }
+        return this.box;
+    }
+
     refresh() {
         let {
             P1,
@@ -204,7 +214,7 @@ class Vec extends PhysicalTemplate {
 
     getBBox(){
         if(!this.box){
-            this.box = []
+            this.box = findExtreme([this.P1,this.P2])
         }
 
         return this.box
