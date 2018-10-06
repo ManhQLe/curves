@@ -73,6 +73,8 @@
         let m2;
         let anchor;
         let ghost;
+        let ghostPoint = d3.select(canvas).append("circle")
+        .attr("fill","#95a5a6")        
        
         d3.select(canvas).on("mousedown", (e = d3.event) => {
             track.m1 = track.origin = [e.clientX, e.clientY]
@@ -94,12 +96,14 @@
                 switch (op) {
                     case "select":
                         let fbox;
+                        let fv;
                         for(let v of Vessels){
                             if(v.constructor.name === "BCurve"){
                                 let box =  v.getBBox()                               
                                 let box2 = findExtreme([track.origin,track.m2])
                                 if(bboxCollide(box,box2)){
                                     fbox = box;
+                                    fv = v;
                                     break;
                                 }
                             }
@@ -115,6 +119,13 @@
                             let d = ["M",min[0]," ",min[1],"L",max[0]," ",min[1],
                                      "L",max[0]," ",max[1],"L",min[0]," ",max[1],"Z"]
                             ghost.attr("d",d.join(""))
+
+                            let t = findClosesetT(track.m2,fv.P1,fv.M1,fv.M2,fv.P2)
+                            let cp = bezier(fv.P1,fv.M1,fv.M2,fv.P2,t);
+                            ghostPoint.attr("cx",cp[0])
+                            .attr("cx",cp[1])
+                            .attr("r",5)
+
                         }
 
                         break;
