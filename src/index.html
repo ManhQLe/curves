@@ -121,7 +121,6 @@
                             ghost.attr("d",d.join(""))
 
                             let t = findClosesetT(track.m2,fv.P1,fv.M1,fv.M2,fv.P2)
-                            console.log(t)
                             let cp = bezier(fv.P1,fv.M1,fv.M2,fv.P2,t);
                             ghostPoint.attr("cx",cp[0])
                             .attr("cy",cp[1])

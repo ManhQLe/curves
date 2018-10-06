@@ -101,7 +101,8 @@ function bezier(P1, P2, P3, P4, t) {
 
 function findClosesetT(P,P1,P2,P3,P4){
     let t1=0,t2=1;
-    let gold = (Math.sqrt(5)-1)*.5;    
+    let gold = (Math.sqrt(5)-1)*.5;
+    let count = 0;    
     while(true){        
         let len = Math.abs(t2-t1);        
         if(len<=1e-5)
@@ -115,8 +116,6 @@ function findClosesetT(P,P1,P2,P3,P4){
 
         let dm1 = vec2.dist(mp1,P)
         let dm2 = vec2.dist(mp2,P)
-        console.log(t1,t2)
-
         if(dm1 < dm2){
             t1 = tm2;
         }
@@ -124,8 +123,9 @@ function findClosesetT(P,P1,P2,P3,P4){
         {
             t2 = tm1;
         }
-
+        count++
     }
+    console.log(count)
     return t1;
 }
 
