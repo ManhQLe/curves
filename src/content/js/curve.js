@@ -97,6 +97,24 @@ function bezier(P1, P2, P3, P4, t) {
     return P;
 }
 
+function findBezierTangent(t,P1,P2,P3,P4) {
+    let t2 = t*t;
+    let onemt = (1 - t);
+    let onemt2 = onemt * onemt;
+    let x = [0,0]
+    let temp = [0,0]
+    vec2.sub(temp,P2,P1)
+    vec2.scaleAndAdd(x,x,temp,3*onemt2);
+
+    vec2.sub(temp,P3,P2)
+    vec2.scaleAndAdd(x,x,temp,6*t*onemt);
+
+    vec2.sub(temp,P4,P3)
+    vec2.scaleAndAdd(x,x,temp,3*t2);
+
+    return x;
+}
+
 function findClosesetT(P,P1,P2,P3,P4){
     let t1=0,t2=1;
     let gold = (Math.sqrt(5)-1)*.5;

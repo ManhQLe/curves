@@ -74,8 +74,8 @@
         let anchor;
         let ghost;
         let ghostPoint = d3.select(canvas).append("circle")
-        .attr("fill","#95a5a6")        
-       
+            .attr("fill", "#95a5a6")
+
         d3.select(canvas).on("mousedown", (e = d3.event) => {
             track.m1 = track.origin = [e.clientX, e.clientY]
         })
@@ -83,7 +83,7 @@
         d3.select(canvas).on("mouseup", (e = d3.event) => {
             anchor ? (Vessels.push(anchor), anchor = null) : 1;
             ghost && canvas.removeChild(ghost.node())
-            ghost = null;            
+            ghost = null;
         })
 
         d3.select(canvas).on("mousemove", (e = d3.event) => {
@@ -97,11 +97,11 @@
                     case "select":
                         let fbox;
                         let fv;
-                        for(let v of Vessels){
-                            if(v.constructor.name === "BCurve"){
-                                let box =  v.getBBox()                               
-                                let box2 = findExtreme([track.origin,track.m2])
-                                if(bboxCollide(box,box2)){
+                        for (let v of Vessels) {
+                            if (v.constructor.name === "BCurve") {
+                                let box = v.getBBox()
+                                let box2 = findExtreme([track.origin, track.m2])
+                                if (bboxCollide(box, box2)) {
                                     fbox = box;
                                     fv = v;
                                     break;
@@ -109,22 +109,23 @@
                             }
                         }
                         ghost || (ghost = d3.select(canvas).append("path")
-                        .attr("stroke","#e74c3c")
-                        .attr("fill","none"))
-                        .attr("stroke-dasharray","5 5")
-                        
-                        ghost.attr("visibility",fbox?"visible":"hidden")
-                        if(fbox){
-                            let [min,max] = fbox;
-                            let d = ["M",min[0]," ",min[1],"L",max[0]," ",min[1],
-                                     "L",max[0]," ",max[1],"L",min[0]," ",max[1],"Z"]
-                            ghost.attr("d",d.join(""))
+                                .attr("stroke", "#e74c3c")
+                                .attr("fill", "none"))
+                            .attr("stroke-dasharray", "5 5")
 
-                            let t = findClosesetT(track.m2,fv.P1,fv.M1,fv.M2,fv.P2)
-                            let cp = bezier(fv.P1,fv.M1,fv.M2,fv.P2,t);
-                            ghostPoint.attr("cx",cp[0])
-                            .attr("cy",cp[1])
-                            .attr("r",5)
+                        ghost.attr("visibility", fbox ? "visible" : "hidden")
+                        if (fbox) {
+                            let [min, max] = fbox;
+                            let d = ["M", min[0], " ", min[1], "L", max[0], " ", min[1],
+                                "L", max[0], " ", max[1], "L", min[0], " ", max[1], "Z"
+                            ]
+                            ghost.attr("d", d.join(""))
+
+                            let t = findClosesetT(track.m2, fv.P1, fv.M1, fv.M2, fv.P2)
+                            let cp = bezier(fv.P1, fv.M1, fv.M2, fv.P2, t);
+                            ghostPoint.attr("cx", cp[0])
+                                .attr("cy", cp[1])
+                                .attr("r", 5)
 
                         }
 
@@ -184,19 +185,45 @@
                     case "bconduit":
 
                         if (!anchor) {
-                            closeVec = Vessels.find(x => x.constructor.name === "Vec" && vec2.dist(x.P2, track.origin) <=
-                                5);
+                            closeVec = null;
+                            let minLen = Infinity;
+                            Vessels.forEach(x => {
+                                let box1 = x.getBBox();
+                                let box2 = [track.origin, track.origin];
+                                if (bboxCollide(box1, box2)) {
+                                    let t1 = [0, 0],
+                                        dist
+                                    switch (x.constructor.name) {
+                                        case "Vec":
+                                            dist = vec2.dist(x.P2, track.origin)
+                                            if (dist <= 5 && dist <= minLen) {
+                                                minLen = dist;
+                                                vec2.sub(t1, x.P2, x.P1)
+                                                closeVec = [x.P2, t1]
+                                            }
+                                            break;
+                                        case "BCurve":
+                                            let t = findClosesetT(x.P1, x.M1, x.M2, x.P2)
+                                            let pt = bezier(x.P1, x.M1, x.M2, x.P2, t)
+                                            dist = vec2.dist(track.origin, pt)
+                                            if (dist <= 5 && dist <= minLen) {
+                                                minLen = dist;
+                                                closeVec = [pt, findBezierTangent(t, x.P1, x.M1, x.M2,x.P2)]
+                                            }
+                                            break;
+                                    }
+                                }
+                            })
 
                             if (closeVec) {
                                 let t1 = [0, 0]
                                 vec2.sub(t1, closeVec.P2, closeVec.P1)
                                 anchor = new BCurve({
-                                    P1: closeVec.P2,
-                                    T1: t1,
+                                    P1: closeVec[0],
+                                    T1: closeVec[1],
                                     reality: canvas
                                 })
                             }
-
                         } else {
                             closeVec = Vessels.find(x => x.constructor.name === "Vec" && vec2.dist(x.P2, track.m2) <=
                                 5);
