@@ -66,8 +66,6 @@ function findFlatPoint(P1, P2, P3, P4) {
     vec2.scaleAndAdd(C, C, P2, 3)
     vec2.scaleAndAdd(C, C, P1, -3)
     
-
-
     return solveQuad(A[0], B[0], C[0])
         .concat(solveQuad(A[1], B[1], C[1]))
         .filter(x => x >= 0 && x <= 1);
@@ -102,9 +100,8 @@ function bezier(P1, P2, P3, P4, t) {
 function findClosesetT(P,P1,P2,P3,P4){
     let t1=0,t2=1;
     let gold = (Math.sqrt(5)-1)*.5;
-    let count = 0;    
     while(true){        
-        let len = Math.abs(t2-t1);        
+        let len = t2-t1;
         if(len<=1e-5)
             break;
 
@@ -123,9 +120,7 @@ function findClosesetT(P,P1,P2,P3,P4){
         {
             t2 = tm1;
         }
-        count++
     }
-    console.log(count)
     return t1;
 }
 
