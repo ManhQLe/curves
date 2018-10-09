@@ -189,6 +189,7 @@
                             let minLen = Infinity;
                             Vessels.forEach(x => {
                                 let box1 = x.getBBox();
+             
                                 let box2 = [track.origin, track.origin];
                                 if (bboxCollide(box1, box2)) {
                                     let t1 = [0, 0],
@@ -203,7 +204,7 @@
                                             }
                                             break;
                                         case "BCurve":
-                                            let t = findClosesetT(x.P1, x.M1, x.M2, x.P2)
+                                            let t = findClosesetT(track.origin,x.P1, x.M1, x.M2, x.P2)
                                             let pt = bezier(x.P1, x.M1, x.M2, x.P2, t)
                                             dist = vec2.dist(track.origin, pt)
                                             if (dist <= 5 && dist <= minLen) {
@@ -216,8 +217,7 @@
                             })
 
                             if (closeVec) {
-                                let t1 = [0, 0]
-                                vec2.sub(t1, closeVec.P2, closeVec.P1)
+
                                 anchor = new BCurve({
                                     P1: closeVec[0],
                                     T1: closeVec[1],
